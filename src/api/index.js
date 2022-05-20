@@ -6,8 +6,8 @@ import {
   findMediaById,
   findMediabyIdandUpdate,
   findMediabyIdandDelete,
-} from "../../src/lib/db/medias.js";
-// import { saveNewReview, findReviewById } from "../../lib/db/review.js";
+} from "../lib/db/media.js";
+import { saveNewReview, findReviewById } from "../../src/lib/db/review.js";
 import {
   checksMediasSchema,
   checksMediasUpdateSchema,

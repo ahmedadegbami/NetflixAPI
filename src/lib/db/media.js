@@ -6,7 +6,7 @@ export const saveNewMedia = async (newMediaData) => {
   const medias = await getMedias();
   const newMedia = {
     ...newMediaData,
-    id: uniqid(),
+    imdbID: uniqid(),
     createdAt: new Date(),
     reviews: [],
   };
