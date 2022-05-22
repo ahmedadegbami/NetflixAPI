@@ -31,8 +31,6 @@ import {
 } from "../../src/lib/fs/tools.js";
 import { extname } from "path";
 
-// import { checkNewReviewsSchema } from "./reviewsValidation.js";
-
 const mediasRouter = express.Router();
 
 mediasRouter.post(
