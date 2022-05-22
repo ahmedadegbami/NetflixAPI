@@ -17,12 +17,12 @@ import {
   checksMediasSchema,
   checksMediasUpdateSchema,
   checkValidationResult,
-} from "./mediasValidation.js";
+} from "./mediasvalidation.js";
 
 import {
   checkReviewSchema,
   checkReviewUpdateSchema,
-} from "./reviewsValidation.js";
+} from "./reviewsvalidation.js";
 
 import createError from "http-errors";
 import {
