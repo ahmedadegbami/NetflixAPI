@@ -7,12 +7,30 @@ import {
   findMediabyIdandUpdate,
   findMediabyIdandDelete,
 } from "../lib/db/media.js";
-import { saveNewReview, findReviewById } from "../../src/lib/db/review.js";
+import {
+  saveNewReview,
+  findReviewById,
+  findReviewByIdAndUpdate,
+  findReviewByIdAndDelete,
+} from "../../src/lib/db/review.js";
 import {
   checksMediasSchema,
   checksMediasUpdateSchema,
   checkValidationResult,
 } from "./mediasValidation.js";
+
+import {
+  checkReviewSchema,
+  checkReviewUpdateSchema,
+} from "./reviewsValidation.js";
+
+import createError from "http-errors";
+import {
+  saveMediasImages,
+  deleteMediasImages,
+} from "../../src/lib/fs/tools.js";
+import { extname } from "path";
+
 // import { checkNewReviewsSchema } from "./reviewsValidation.js";
 
 const mediasRouter = express.Router();
@@ -75,6 +93,10 @@ mediasRouter.put(
 
 mediasRouter.delete("/:mediaId", async (req, res, next) => {
   try {
+    const media = await findMediaById(req.params.mediaId);
+
+    await deleteMediasImages(media.poster);
+
     await findMediabyIdandDelete(req.params.mediaId);
     res.status(204).send();
   } catch (error) {
@@ -93,14 +115,19 @@ mediasRouter.post(
   }
 );
 
-mediasRouter.post("/:mediaId/review", async (req, res, next) => {
-  try {
-    const newReview = await saveNewReview(req.params.mediaId, req.body);
-    res.status(201).send(newReview);
-  } catch (error) {
-    next(error);
+mediasRouter.post(
+  "/:mediaId/review",
+  checkReviewSchema,
+  checkValidationResult,
+  async (req, res, next) => {
+    try {
+      const newReview = await saveNewReview(req.params.mediaId, req.body);
+      res.status(201).send(newReview);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 mediasRouter.get("/:mediaId/review", async (req, res, next) => {
   try {
@@ -123,18 +150,60 @@ mediasRouter.get("/:mediaId/review/:reviewId", async (req, res, next) => {
   }
 });
 
-mediasRouter.put("/:mediaId/review/:reviewId", async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
+mediasRouter.put(
+  "/:mediaId/review/:reviewId",
+  checkReviewUpdateSchema,
+  checkValidationResult,
+  async (req, res, next) => {
+    try {
+      const updatedReview = await findReviewByIdAndUpdate(
+        req.params.mediaId,
+        req.params.reviewId,
+        req.body
+      );
+      res.send(updatedReview);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 mediasRouter.delete("/:mediaId/review/:reviewId", async (req, res, next) => {
   try {
+    const reviews = await findReviewByIdAndDelete(
+      req.params.mediaId,
+      req.params.reviewId
+    );
+    res.send(reviews);
   } catch (error) {
     next(error);
   }
 });
 
+mediasRouter.post(
+  "/:mediaId/poster",
+  multer({
+    limits: 1 * 1024 * 1024,
+    fileFilter: (req, file, next) => {
+      if (file.mimetype !== "image/gif" && file.mimetype !== "image/jpeg") {
+        next(createError(400, "Only GIF allowed!"));
+      } else {
+        next(null, true);
+      }
+    },
+  }).single("poster"),
+  async (req, res, next) => {
+    try {
+      const fileName = req.params.mediaId + extname(req.file.originalname);
+      await saveMediasImages(fileName, req.file.buffer);
+
+      const updatedMedia = await findMediabyIdandUpdate(req.params.mediaId, {
+        poster: "/img/medias/" + fileName,
+      });
+      res.send(updatedMedia);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 export default mediasRouter;

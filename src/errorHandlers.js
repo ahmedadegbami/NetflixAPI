@@ -1,17 +1,26 @@
 export const badRequestErrorHandler = (err, req, res, next) => {
   if (err.status === 400) {
-    return res
-      .status(400)
-      .send({ message: err.message, errorsList: err.errorslist });
+    res.status(400).send({
+      success: false,
+      message: err.message,
+      errorsList: err.errorsList,
+    });
+  } else {
+    next(err);
   }
-  next(err);
 };
+
 export const notFoundErrorHandler = (err, req, res, next) => {
   if (err.status === 404) {
-    return res.status(404).send({ message: err.message });
+    res.status(404).send({ success: false, message: err.message });
+  } else {
+    next(err);
   }
 };
-export const genericServerErrorHandler = (err, req, res, next) => {
+
+export const genericErrorHandler = (err, req, res, next) => {
   console.log(err);
-  res.status(500).send({ message: "generic ERROR ON OUR SIDE" });
+  res
+    .status(500)
+    .send({ success: false, message: "Generic Error on our side!" });
 };

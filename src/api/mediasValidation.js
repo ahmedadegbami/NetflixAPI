@@ -49,7 +49,7 @@ export const checkValidationResult = (req, res, next) => {
   console.log(errors);
   if (!errors.isEmpty()) {
     next(
-      createError(400, `validation errors!`, { errorslist: errors.array() })
+      createError(400, `validation errors!`, { errorsList: errors.array() })
     );
   } else {
     next();

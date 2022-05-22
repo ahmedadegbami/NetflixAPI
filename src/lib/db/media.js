@@ -19,7 +19,7 @@ export const findMedias = () => getMedias();
 
 export const findMediaById = async (mediaId) => {
   const medias = await getMedias();
-  const foundMedias = medias.find((media) => media.id === mediaId);
+  const foundMedias = medias.find((media) => media.imdbID === mediaId);
   if (foundMedias) {
     return foundMedias;
   } else {
@@ -29,7 +29,7 @@ export const findMediaById = async (mediaId) => {
 
 export const findMediabyIdandUpdate = async (mediaId, updatedMedia) => {
   const medias = await getMedias();
-  const foundMedias = medias.findIndex((media) => media.id === mediaId);
+  const foundMedias = medias.findIndex((media) => media.imdbID === mediaId);
   if (foundMedias !== -1) {
     medias[foundMedias] = {
       ...medias[foundMedias],
@@ -45,7 +45,7 @@ export const findMediabyIdandUpdate = async (mediaId, updatedMedia) => {
 
 export const findMediabyIdandDelete = async (mediaId) => {
   const medias = await getMedias();
-  const remMedias = medias.filter((media) => media.id !== mediaId);
+  const remMedias = medias.filter((media) => media.imdbID !== mediaId);
   if (medias.length === remMedias.length) {
     throw createError(404, `media with id ${mediaId} not found`);
   } else {
