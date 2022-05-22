@@ -13,11 +13,11 @@ import {
   findReviewByIdAndUpdate,
   findReviewByIdAndDelete,
 } from "../../src/lib/db/review.js";
-import {
-  checksMediasSchema,
-  checksMediasUpdateSchema,
-  checkValidationResult,
-} from "./mediasValidation.js";
+// import {
+//   checksMediasSchema,
+//   checksMediasUpdateSchema,
+//   checkValidationResult,
+// } from "./mediasValidation.js";
 
 import {
   checkReviewSchema,
