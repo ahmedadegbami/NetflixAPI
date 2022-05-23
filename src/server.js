@@ -5,7 +5,7 @@ import cors from "cors";
 import {
   badRequestErrorHandler,
   notFoundErrorHandler,
-  genericErrorHandler,
+  genericErrorHandler
 } from "./errorHandlers.js";
 import { join } from "path";
 
@@ -13,7 +13,7 @@ const server = express();
 
 const publicFolderPath = join(process.cwd(), "./public");
 
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3001;
 
 const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];
 
@@ -31,7 +31,7 @@ const corsOptions = {
         )
       );
     }
-  },
+  }
 };
 
 //*************** MIDDLEWARE ***************//
