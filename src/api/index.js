@@ -5,31 +5,29 @@ import {
   findMedias,
   findMediaById,
   findMediabyIdandUpdate,
-  findMediabyIdandDelete,
+  findMediabyIdandDelete
 } from "../lib/db/media.js";
 import {
   saveNewReview,
   findReviewById,
   findReviewByIdAndUpdate,
-  findReviewByIdAndDelete,
+  findReviewByIdAndDelete
 } from "../../src/lib/db/review.js";
 import {
   checksMediasSchema,
   checksMediasUpdateSchema,
-  checkValidationResult,
+  checkValidationResult
 } from "./mediasValidator.js";
 
 import {
   checkReviewSchema,
-  checkReviewUpdateSchema,
+  checkReviewUpdateSchema
 } from "./reviewValidator.js";
 
 import createError from "http-errors";
-import {
-  saveMediasImages,
-  deleteMediasImages,
-} from "../../src/lib/fs/tools.js";
 import { extname } from "path";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const mediasRouter = express.Router();
 
@@ -178,27 +176,32 @@ mediasRouter.delete("/:mediaId/review/:reviewId", async (req, res, next) => {
   }
 });
 
+const cloudinaryUploader = multer({
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: "netflix/media"
+    }
+  }),
+  fileFilter: (req, file, multerNext) => {
+    if (file.mimetype !== "image/png" && file.mimetype !== "image/jpeg") {
+      multerNext(createError(400, "Only png/jpeg allowed!"));
+    } else {
+      multerNext(null, true);
+    }
+  },
+  limits: { fileSize: 1024 * 1024 * 5 }
+}).single("poster");
+
 mediasRouter.post(
   "/:mediaId/poster",
-  multer({
-    limits: 1 * 1024 * 1024,
-    fileFilter: (req, file, next) => {
-      if (file.mimetype !== "image/gif" && file.mimetype !== "image/jpeg") {
-        next(createError(400, "Only GIF allowed!"));
-      } else {
-        next(null, true);
-      }
-    },
-  }).single("poster"),
+  cloudinaryUploader,
   async (req, res, next) => {
     try {
-      const fileName = req.params.mediaId + extname(req.file.originalname);
-      await saveMediasImages(fileName, req.file.buffer);
-
-      const updatedMedia = await findMediabyIdandUpdate(req.params.mediaId, {
-        poster: "/img/medias/" + fileName,
+      const media = await findMediabyIdandUpdate(req.params.mediaId, {
+        Poster: req.file.path
       });
-      res.send(updatedMedia);
+      res.send(media);
     } catch (error) {
       next(error);
     }

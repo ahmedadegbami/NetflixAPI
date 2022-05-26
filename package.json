@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/ahmedadegbami/NetflixAPI#readme",
   "dependencies": {
+    "axios": "^0.27.2",
+    "cloudinary": "^1.30.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-list-endpoints": "^6.0.0",
@@ -28,6 +30,10 @@
     "fs-extra": "^10.1.0",
     "http-errors": "^2.0.0",
     "multer": "^1.4.4",
+    "multer-storage-cloudinary": "^4.0.0",
+    "pdfmake": "^0.2.5",
+    "stream": "^0.0.2",
+    "striptags": "^3.2.0",
     "uniqid": "^5.4.0",
     "validator": "^13.7.0"
   },

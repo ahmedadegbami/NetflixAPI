@@ -4,40 +4,40 @@ import createError from "http-errors";
 const mediasSchema = {
   Type: {
     isString: {
-      errorMessage: "Description must be a string",
-    },
+      errorMessage: "Type must be a string"
+    }
   },
   Title: {
     isString: {
-      errorMessage: "Name must be a string",
-    },
+      errorMessage: "Title must be a string"
+    }
   },
   Year: {
-    isString: {
-      errorMessage: "Brand must be a string",
-    },
-  },
+    isInt: {
+      errorMessage: "Year must be an intergal "
+    }
+  }
 };
 
 const mediasUpdateSchema = {
   Type: {
     isString: {
-      errorMessage: "Description must be a string",
+      errorMessage: "Description must be a string"
     },
-    optional: true,
+    optional: true
   },
   Title: {
     isString: {
-      errorMessage: "Name must be a string",
+      errorMessage: "Name must be a string"
     },
-    optional: true,
+    optional: true
   },
   Year: {
     isString: {
-      errorMessage: "Brand must be a string",
+      errorMessage: "Brand must be a string"
     },
-    optional: true,
-  },
+    optional: true
+  }
 };
 
 export const checksMediasSchema = checkSchema(mediasSchema);

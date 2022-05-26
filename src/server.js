@@ -8,6 +8,7 @@ import {
   genericErrorHandler
 } from "./errorHandlers.js";
 import { join } from "path";
+import mediaFileRouter from "./api/mediaFile.js";
 
 const server = express();
 
@@ -41,6 +42,7 @@ server.use(express.json());
 
 //*************** ENDPOINTS ***************//
 server.use("/media", mediasRouter);
+server.use("/mediaFile", mediaFileRouter);
 
 //*************** ERRORHANDLER ***************//
 
