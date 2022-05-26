@@ -1,5 +1,8 @@
 import express from "express";
 import multer from "multer";
+import axios from "axios";
+import uniqid from "uniqid";
+import { getMedias, writeMedias } from "../lib/fs/tools.js";
 import {
   saveNewMedia,
   findMedias,
@@ -53,6 +56,30 @@ mediasRouter.get("/", async (req, res, next) => {
         (media) => media.category === req.query.category
       );
       res.send(filteredmedias);
+    } else if (req.query && req.query.title) {
+      const foundmedias = medias.find(
+        (media) => media.title === req.query.title
+      );
+      if (foundmedias) {
+        res.send(foundmedias);
+      } else {
+        const { data } = await axios.get(
+          `http://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&t=${req.query.title}`
+        );
+        const newMedia = {
+          title: data.Title,
+          year: data.Year,
+          type: data.Type,
+          poster: data.Poster,
+          createdAt: new Date(),
+          imdbID: uniqid(),
+          reviews: []
+        };
+        const medias = await findMedias();
+        medias.push(newMedia);
+        await writeMedias(medias);
+        res.status(200).json(newMedia);
+      }
     } else {
       res.json(medias);
     }
